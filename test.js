@@ -548,211 +548,211 @@ const mockOrdersData = [
 // ========================================
 // 測試四：購物車服務
 // ========================================
-describe('測試四：購物車服務', () => {
+// describe('測試四：購物車服務', () => {
 
-  describe('getCart', () => {
-    test('應回傳含 carts、total、finalTotal 的物件', async () => {
-      api.fetchCart.mockResolvedValue(mockCartData);
+//   describe('getCart', () => {
+//     test('應回傳含 carts、total、finalTotal 的物件', async () => {
+//       api.fetchCart.mockResolvedValue(mockCartData);
 
-      const result = await cartService.getCart();
-      expect(typeof result).toBe('object');
-      expect(result).not.toBeNull();
-      expect(Array.isArray(result.carts)).toBe(true);
-      expect(result).toHaveProperty('total');
-      expect(result).toHaveProperty('finalTotal');
-    });
-  });
-
-  describe('addProductToCart', () => {
-    test('有效加入應回傳 success: true 且有 data 屬性', async () => {
-      api.addToCart.mockResolvedValue(mockCartData);
-
-      const result = await cartService.addProductToCart('product-1', 1);
-      expect(result.success).toBe(true);
-      expect(result).toHaveProperty('data');
-    });
-
-    // 【重點示範】驗證失敗應在 API 呼叫前就被擋下來
-    test('無效數量應回傳 success: false 且有 error 屬性', async () => {
-      const result = await cartService.addProductToCart('any-id', -1);
-      expect(result.success).toBe(false);
-      expect(result).toHaveProperty('error');
-
-      // 驗證 addToCart 根本沒被呼叫（因為在驗證就失敗了）
-      expect(api.addToCart).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('updateProduct', () => {
-    // 【重點示範】同上，無效數量應在呼叫 API 前就被擋下來
-    test('無效數量應回傳 success: false 且有 error 屬性', async () => {
-      const result = await cartService.updateProduct('test-cart-id', -1);
-      expect(result.success).toBe(false);
-      expect(result).toHaveProperty('error');
-
-      // 驗證 updateCartItem 沒被呼叫
-      expect(api.updateCartItem).not.toHaveBeenCalled();
-    });
-
-    test('應回傳有 success 屬性的物件', async () => {
-      api.updateCartItem.mockResolvedValue({ message: '已更新' });
-
-      const result = await cartService.updateProduct('cart-1', 2);
-      expect(result).toHaveProperty('success');
-    });
-  });
-
-  describe('removeProduct', () => {
-    test('應回傳 success: true 的物件', async () => {
-      api.deleteCartItem.mockResolvedValue({ message: '已刪除' });
-
-      const result = await cartService.removeProduct('cart-1');
-      expect(result).toHaveProperty('success');
-      expect(result.success).toBe(true);
-    });
-  });
-
-  describe('getCartTotal', () => {
-    test('應有實作且回傳非 null 物件', async () => {
-      api.fetchCart.mockResolvedValue(mockCartData);
-
-      const result = await cartService.getCartTotal();
-      expect(result).toBeDefined();
-      expect(typeof result).toBe('object');
-      expect(result).not.toBeNull();
-    });
-
-    test('應有 total、finalTotal、itemCount 屬性（皆為數字），且 itemCount 為非負數', async () => {
-      api.fetchCart.mockResolvedValue(mockCartData);
-
-      const result = await cartService.getCartTotal();
-      expect(typeof result.total).toBe('number');
-      expect(typeof result.finalTotal).toBe('number');
-      expect(typeof result.itemCount).toBe('number');
-      expect(result.itemCount).toBeGreaterThanOrEqual(0);
-    });
-  });
-});
-
-// ========================================
-// 測試五：訂單服務
-// ========================================
-// describe('測試五：訂單服務', () => {
-  
-//   describe('placeOrder', () => {
-//     // 【重點示範】驗證失敗時完全不打 API
-//     test('無效資料應回傳 success: false 且有非空 errors 陣列', async () => {
-//       const result = await orderService.placeOrder(invalidUser);
-//       expect(result).toBeDefined();
-//       expect(result.success).toBe(false);
-//       expect(Array.isArray(result.errors)).toBe(true);
-
-//       // 驗證資料不合格時，createOrder 不應被呼叫
-//       expect(api.createOrder).not.toHaveBeenCalled();
+//       const result = await cartService.getCart();
+//       expect(typeof result).toBe('object');
+//       expect(result).not.toBeNull();
+//       expect(Array.isArray(result.carts)).toBe(true);
+//       expect(result).toHaveProperty('total');
+//       expect(result).toHaveProperty('finalTotal');
 //     });
+//   });
 
-//     test('有效資料應回傳 success: true 且無 errors', async () => {
-//       api.createOrder.mockResolvedValue({ status: true, id: 'new-order-id' });
+//   describe('addProductToCart', () => {
+//     test('有效加入應回傳 success: true 且有 data 屬性', async () => {
+//       api.addToCart.mockResolvedValue(mockCartData);
 
-//       const result = await orderService.placeOrder(validUser);
+//       const result = await cartService.addProductToCart('product-1', 1);
 //       expect(result.success).toBe(true);
-//       if (result.success) {
-//         expect(result.errors).toBeUndefined();
-//       }
+//       expect(result).toHaveProperty('data');
+//     });
+
+//     // 【重點示範】驗證失敗應在 API 呼叫前就被擋下來
+//     test('無效數量應回傳 success: false 且有 error 屬性', async () => {
+//       const result = await cartService.addProductToCart('any-id', -1);
+//       expect(result.success).toBe(false);
+//       expect(result).toHaveProperty('error');
+
+//       // 驗證 addToCart 根本沒被呼叫（因為在驗證就失敗了）
+//       expect(api.addToCart).not.toHaveBeenCalled();
 //     });
 //   });
 
-//   describe('getOrders', () => {
-//     test('應回傳非 undefined 的陣列，且每筆訂單含必要欄位', async () => {
-//       api.fetchOrders.mockResolvedValue(mockOrdersData);
+//   describe('updateProduct', () => {
+//     // 【重點示範】同上，無效數量應在呼叫 API 前就被擋下來
+//     test('無效數量應回傳 success: false 且有 error 屬性', async () => {
+//       const result = await cartService.updateProduct('test-cart-id', -1);
+//       expect(result.success).toBe(false);
+//       expect(result).toHaveProperty('error');
 
-//       const result = await orderService.getOrders();
-//       expect(result).toBeDefined();
-//       expect(Array.isArray(result)).toBe(true);
-//       if (result.length > 0) {
-//         expect(result[0]).toHaveProperty('id');
-//         expect(result[0]).toHaveProperty('user');
-//         expect(result[0]).toHaveProperty('paid');
-//       }
+//       // 驗證 updateCartItem 沒被呼叫
+//       expect(api.updateCartItem).not.toHaveBeenCalled();
 //     });
-//   });
 
-//   describe('getUnpaidOrders', () => {
-//     test('應回傳陣列且有實作，所有訂單的 paid 應為 false', async () => {
-//       // mockOrdersData 包含 paid: false 和 paid: true 各一筆，驗證篩選邏輯
-//       api.fetchOrders.mockResolvedValue(mockOrdersData);
-
-//       const result = await orderService.getUnpaidOrders();
-//       expect(result).toBeDefined();
-//       expect(Array.isArray(result)).toBe(true);
-//       if (result.length > 0) {
-//         expect(result.every(o => !o.paid)).toBe(true);
-//         expect(result.find(o => o.paid)).toBeUndefined();
-//       }
-//     });
-//   });
-
-//   describe('getPaidOrders', () => {
-//     test('應回傳陣列且有實作，所有訂單的 paid 應為 true', async () => {
-//       api.fetchOrders.mockResolvedValue(mockOrdersData);
-
-//       const result = await orderService.getPaidOrders();
-//       expect(result).toBeDefined();
-//       expect(Array.isArray(result)).toBe(true);
-//       if (result.length > 0) {
-//         expect(result.every(o => o.paid)).toBe(true);
-//         expect(result.find(o => !o.paid)).toBeUndefined();
-//       }
-//     });
-//   });
-
-//   describe('updatePaymentStatus', () => {
 //     test('應回傳有 success 屬性的物件', async () => {
-//       api.updateOrderStatus.mockResolvedValue({ status: true, orders: mockOrdersData });
+//       api.updateCartItem.mockResolvedValue({ message: '已更新' });
 
-//       const result = await orderService.updatePaymentStatus('order-1', true);
-//       expect(result).toBeDefined();
+//       const result = await cartService.updateProduct('cart-1', 2);
 //       expect(result).toHaveProperty('success');
 //     });
 //   });
 
-//   describe('removeOrder', () => {
-//     test('應回傳有 success 屬性的物件', async () => {
-//       api.deleteOrder.mockResolvedValue({ status: true });
+//   describe('removeProduct', () => {
+//     test('應回傳 success: true 的物件', async () => {
+//       api.deleteCartItem.mockResolvedValue({ message: '已刪除' });
 
-//       const result = await orderService.removeOrder('order-1');
-//       expect(result).toBeDefined();
+//       const result = await cartService.removeProduct('cart-1');
 //       expect(result).toHaveProperty('success');
+//       expect(result.success).toBe(true);
 //     });
 //   });
 
-//   describe('formatOrder', () => {
-//     // formatOrder 是純函式，不呼叫 API，不需要設定 mock
-//     test('應回傳物件', () => {
-//       const result = orderService.formatOrder(mockOrder);
+//   describe('getCartTotal', () => {
+//     test('應有實作且回傳非 null 物件', async () => {
+//       api.fetchCart.mockResolvedValue(mockCartData);
+
+//       const result = await cartService.getCartTotal();
+//       expect(result).toBeDefined();
 //       expect(typeof result).toBe('object');
 //       expect(result).not.toBeNull();
 //     });
 
-//     test('應有 totalFormatted 屬性', () => {
-//       const result = orderService.formatOrder(mockOrder);
-//       expect(result).toHaveProperty('totalFormatted');
-//     });
+//     test('應有 total、finalTotal、itemCount 屬性（皆為數字），且 itemCount 為非負數', async () => {
+//       api.fetchCart.mockResolvedValue(mockCartData);
 
-//     test('未付款訂單 paidText 應為「未付款」', () => {
-//       const result = orderService.formatOrder(mockOrder);
-//       expect(result.paidText).toBe('未付款');
-//     });
-
-//     test('已付款訂單 paidText 應為「已付款」', () => {
-//       const paidOrder = { ...mockOrder, paid: true };
-//       const result = orderService.formatOrder(paidOrder);
-//       expect(result.paidText).toBe('已付款');
-//     });
-
-//     test('createdAt 應為格式化日期字串', () => {
-//       const result = orderService.formatOrder(mockOrder);
-//       expect(result.createdAt).toMatch(/^\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}$/);
+//       const result = await cartService.getCartTotal();
+//       expect(typeof result.total).toBe('number');
+//       expect(typeof result.finalTotal).toBe('number');
+//       expect(typeof result.itemCount).toBe('number');
+//       expect(result.itemCount).toBeGreaterThanOrEqual(0);
 //     });
 //   });
 // });
+
+// ========================================
+// 測試五：訂單服務
+// ========================================
+describe('測試五：訂單服務', () => {
+  
+  describe('placeOrder', () => {
+    // 【重點示範】驗證失敗時完全不打 API
+    test('無效資料應回傳 success: false 且有非空 errors 陣列', async () => {
+      const result = await orderService.placeOrder(invalidUser);
+      expect(result).toBeDefined();
+      expect(result.success).toBe(false);
+      expect(Array.isArray(result.errors)).toBe(true);
+
+      // 驗證資料不合格時，createOrder 不應被呼叫
+      expect(api.createOrder).not.toHaveBeenCalled();
+    });
+
+    test('有效資料應回傳 success: true 且無 errors', async () => {
+      api.createOrder.mockResolvedValue({ status: true, id: 'new-order-id' });
+
+      const result = await orderService.placeOrder(validUser);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.errors).toBeUndefined();
+      }
+    });
+  });
+
+  describe('getOrders', () => {
+    test('應回傳非 undefined 的陣列，且每筆訂單含必要欄位', async () => {
+      api.fetchOrders.mockResolvedValue(mockOrdersData);
+
+      const result = await orderService.getOrders();
+      expect(result).toBeDefined();
+      expect(Array.isArray(result)).toBe(true);
+      if (result.length > 0) {
+        expect(result[0]).toHaveProperty('id');
+        expect(result[0]).toHaveProperty('user');
+        expect(result[0]).toHaveProperty('paid');
+      }
+    });
+  });
+
+  describe('getUnpaidOrders', () => {
+    test('應回傳陣列且有實作，所有訂單的 paid 應為 false', async () => {
+      // mockOrdersData 包含 paid: false 和 paid: true 各一筆，驗證篩選邏輯
+      api.fetchOrders.mockResolvedValue(mockOrdersData);
+
+      const result = await orderService.getUnpaidOrders();
+      expect(result).toBeDefined();
+      expect(Array.isArray(result)).toBe(true);
+      if (result.length > 0) {
+        expect(result.every(o => !o.paid)).toBe(true);
+        expect(result.find(o => o.paid)).toBeUndefined();
+      }
+    });
+  });
+
+  describe('getPaidOrders', () => {
+    test('應回傳陣列且有實作，所有訂單的 paid 應為 true', async () => {
+      api.fetchOrders.mockResolvedValue(mockOrdersData);
+
+      const result = await orderService.getPaidOrders();
+      expect(result).toBeDefined();
+      expect(Array.isArray(result)).toBe(true);
+      if (result.length > 0) {
+        expect(result.every(o => o.paid)).toBe(true);
+        expect(result.find(o => !o.paid)).toBeUndefined();
+      }
+    });
+  });
+
+  describe('updatePaymentStatus', () => {
+    test('應回傳有 success 屬性的物件', async () => {
+      api.updateOrderStatus.mockResolvedValue({ status: true, orders: mockOrdersData });
+
+      const result = await orderService.updatePaymentStatus('order-1', true);
+      expect(result).toBeDefined();
+      expect(result).toHaveProperty('success');
+    });
+  });
+
+  describe('removeOrder', () => {
+    test('應回傳有 success 屬性的物件', async () => {
+      api.deleteOrder.mockResolvedValue({ status: true });
+
+      const result = await orderService.removeOrder('order-1');
+      expect(result).toBeDefined();
+      expect(result).toHaveProperty('success');
+    });
+  });
+
+  describe('formatOrder', () => {
+    // formatOrder 是純函式，不呼叫 API，不需要設定 mock
+    test('應回傳物件', () => {
+      const result = orderService.formatOrder(mockOrder);
+      expect(typeof result).toBe('object');
+      expect(result).not.toBeNull();
+    });
+
+    test('應有 totalFormatted 屬性', () => {
+      const result = orderService.formatOrder(mockOrder);
+      expect(result).toHaveProperty('totalFormatted');
+    });
+
+    test('未付款訂單 paidText 應為「未付款」', () => {
+      const result = orderService.formatOrder(mockOrder);
+      expect(result.paidText).toBe('未付款');
+    });
+
+    test('已付款訂單 paidText 應為「已付款」', () => {
+      const paidOrder = { ...mockOrder, paid: true };
+      const result = orderService.formatOrder(paidOrder);
+      expect(result.paidText).toBe('已付款');
+    });
+
+    test('createdAt 應為格式化日期字串', () => {
+      const result = orderService.formatOrder(mockOrder);
+      expect(result.createdAt).toMatch(/^\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}$/);
+    });
+  });
+});
