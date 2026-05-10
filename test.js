@@ -272,278 +272,278 @@ const mockOrdersData = [
 // ========================================
 // 測試二：工具函式
 // ========================================
-describe('測試二：工具函式', () => {
+// describe('測試二：工具函式', () => {
 
-  describe('getDiscountRate', () => {
-    test('應回傳字串', () => {
-      const result = utils.getDiscountRate(mockProduct);
-      expect(typeof result).toBe('string');
-    });
-
-    test('應包含 "折"', () => {
-      const result = utils.getDiscountRate(mockProduct);
-      expect(result).toContain('折');
-    });
-
-    test('應正確四捨五入：7.4折應為7折', () => {
-      const product = { price: 740, origin_price: 1000 };
-      const result = utils.getDiscountRate(product);
-      expect(result).toMatch(/^7\s*折$/);
-    });
-  });
-
-  describe('getAllCategories', () => {
-    test('應回傳陣列', () => {
-      const result = utils.getAllCategories(mockProducts);
-      expect(Array.isArray(result)).toBe(true);
-    });
-
-    test('應去除重複（2 個分類）', () => {
-      const result = utils.getAllCategories(mockProducts);
-      expect(result.length).toBe(2);
-    });
-
-    test('結果不應有重複的分類', () => {
-      const result = utils.getAllCategories(mockProducts);
-      const uniqueResult = [...new Set(result)];
-      expect(result.length).toBe(uniqueResult.length);
-    });
-  });
-
-  describe('formatDate', () => {
-    const timestamp = 1704067200; // 2024/01/01 08:00
-
-    test('應有實作（不為 undefined）', () => {
-      const result = utils.formatDate(timestamp);
-      expect(result).toBeDefined();
-    });
-
-    test('應回傳字串', () => {
-      const result = utils.formatDate(timestamp);
-      expect(typeof result).toBe('string');
-    });
-
-    test('格式應為 YYYY/MM/DD HH:mm', () => {
-      const result = utils.formatDate(timestamp);
-      expect(result).toMatch(/^\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}$/);
-    });
-  });
-
-  describe('getDaysAgo', () => {
-    test('應有實作（不為 undefined）', () => {
-      const timestamp = Math.floor(Date.now() / 1000) - 86400 * 3;
-      const result = utils.getDaysAgo(timestamp);
-      expect(result).toBeDefined();
-    });
-
-    test('應回傳字串', () => {
-      const timestamp = Math.floor(Date.now() / 1000) - 86400 * 3;
-      const result = utils.getDaysAgo(timestamp);
-      expect(typeof result).toBe('string');
-    });
-
-    test('今天的時間戳應回傳「今天」', () => {
-      const timestamp = Math.floor(Date.now() / 1000);
-      const result = utils.getDaysAgo(timestamp);
-      expect(result).toBe('今天');
-    });
-
-    test('應包含中文時間關鍵字', () => {
-      const timestamp = Math.floor(Date.now() / 1000) - 86400 * 3;
-      const result = utils.getDaysAgo(timestamp);
-      expect(result).toMatch(/天|今/);
-    });
-  });
-
-  describe('validateOrderUser', () => {
-    test('應有實作（不為 undefined）', () => {
-      const result = utils.validateOrderUser(validUser);
-      expect(result).toBeDefined();
-    });
-
-    test('有效資料應回傳物件', () => {
-      const result = utils.validateOrderUser(validUser);
-      expect(typeof result).toBe('object');
-      expect(result).not.toBeNull();
-    });
-
-    test('有效資料 isValid 應為 true', () => {
-      const result = utils.validateOrderUser(validUser);
-      expect(result.isValid).toBe(true);
-    });
-
-    test('無效資料 isValid 應為 false', () => {
-      const result = utils.validateOrderUser(invalidUser);
-      expect(result.isValid).toBe(false);
-    });
-
-    test('無效資料應有 errors 陣列', () => {
-      const result = utils.validateOrderUser(invalidUser);
-      expect(Array.isArray(result.errors)).toBe(true);
-      expect(result.errors.length).toBeGreaterThan(0);
-    });
-
-    test('姓名為空應驗證失敗', () => {
-      const emptyName = { ...validUser, name: '' };
-      const result = utils.validateOrderUser(emptyName);
-      expect(result.isValid).toBe(false);
-    });
-
-    test('電話格式不正確應驗證失敗', () => {
-      const wrongTel = { ...validUser, tel: '1234567890' };
-      const result = utils.validateOrderUser(wrongTel);
-      expect(result.isValid).toBe(false);
-    });
-
-    test('Email 格式不正確應驗證失敗', () => {
-      const wrongEmail = { ...validUser, email: 'notanemail' };
-      const result = utils.validateOrderUser(wrongEmail);
-      expect(result.isValid).toBe(false);
-    });
-
-    test('地址為空應驗證失敗', () => {
-      const emptyAddress = { ...validUser, address: '' };
-      const result = utils.validateOrderUser(emptyAddress);
-      expect(result.isValid).toBe(false);
-    });
-
-    test('付款方式不在允許清單應驗證失敗', () => {
-      const wrongPayment = { ...validUser, payment: 'Bitcoin' };
-      const result = utils.validateOrderUser(wrongPayment);
-      expect(result.isValid).toBe(false);
-    });
-  });
-
-  describe('validateCartQuantity', () => {
-    test('應有實作（不為 undefined）', () => {
-      const result = utils.validateCartQuantity(5);
-      expect(result).toBeDefined();
-    });
-
-    test('應回傳物件', () => {
-      const result = utils.validateCartQuantity(5);
-      expect(typeof result).toBe('object');
-      expect(result).not.toBeNull();
-    });
-
-    test('有效數量應驗證成功', () => {
-      const result = utils.validateCartQuantity(5);
-      expect(result.isValid).toBe(true);
-    });
-
-    test('數量 0 應驗證失敗', () => {
-      const result = utils.validateCartQuantity(0);
-      expect(result.isValid).toBe(false);
-    });
-
-    test('數量 100 應驗證失敗', () => {
-      const result = utils.validateCartQuantity(100);
-      expect(result.isValid).toBe(false);
-    });
-
-    test('小數應驗證失敗', () => {
-      const result = utils.validateCartQuantity(5.5);
-      expect(result.isValid).toBe(false);
-    });
-  });
-
-  describe('formatCurrency', () => {
-    test('應有實作（不為 undefined）', () => {
-      const result = utils.formatCurrency(1000);
-      expect(result).toBeDefined();
-    });
-
-    test('應包含 NT$ 前缀', () => {
-      const result = utils.formatCurrency(1000);
-      expect(result).toContain('NT$');
-    });
-
-    test('1000 應格式化為千位分隔符 1,000', () => {
-      const result = utils.formatCurrency(1000);
-      expect(result).toContain('1,000');
-    });
-
-    test('1000000 應正確格式化為 1,000,000', () => {
-      const result = utils.formatCurrency(1000000);
-      expect(result).toContain('1,000,000');
-    });
-  });
-});
-
-// ========================================
-// 測試三：產品服務
-// ========================================
-// describe('測試三：產品服務', () => {
-
-//   // 從測試三開始，用 mockResolvedValue 覆蓋測試一設定的真實實作
-//   // 每個 describe 的 beforeEach 會在「檔案層級 beforeEach（clearAllMocks）」之後執行
-//   beforeEach(() => {
-//     api.fetchProducts.mockResolvedValue(mockApiProducts);
-//   });
-
-//   describe('getProducts', () => {
-//     test('應回傳物件', async () => {
-//       const result = await productService.getProducts();
-//       expect(typeof result).toBe('object');
-//       expect(result).not.toBeNull();
+//   describe('getDiscountRate', () => {
+//     test('應回傳字串', () => {
+//       const result = utils.getDiscountRate(mockProduct);
+//       expect(typeof result).toBe('string');
 //     });
 
-//     test('count 應為數字且等於 products 長度', async () => {
-//       const result = await productService.getProducts();
-//       expect(typeof result.count).toBe('number');
-//       expect(result.count).toBe(result.products.length);
+//     test('應包含 "折"', () => {
+//       const result = utils.getDiscountRate(mockProduct);
+//       expect(result).toContain('折');
 //     });
 
-//     test('應只呼叫一次 fetchProducts', async () => {
-//       await productService.getProducts();
-//       expect(api.fetchProducts).toHaveBeenCalledTimes(1);
+//     test('應正確四捨五入：7.4折應為7折', () => {
+//       const product = { price: 740, origin_price: 1000 };
+//       const result = utils.getDiscountRate(product);
+//       expect(result).toMatch(/^7\s*折$/);
 //     });
 //   });
 
-//   describe('getProductsByCategory', () => {
-//     // 【注意】mock 版直接使用假資料裡的分類名稱，不需要先呼叫 getCategories() 取得真實分類
-//     test('應回傳符合分類的陣列', async () => {
-//       const result = await productService.getProductsByCategory('衣服');
+//   describe('getAllCategories', () => {
+//     test('應回傳陣列', () => {
+//       const result = utils.getAllCategories(mockProducts);
 //       expect(Array.isArray(result)).toBe(true);
-//       expect(result.every(p => p.category === '衣服')).toBe(true);
 //     });
 
-//     test('不存在的分類應回傳空陣列', async () => {
-//       const result = await productService.getProductsByCategory('不存在的分類');
-//       expect(Array.isArray(result)).toBe(true);
-//       expect(result.length).toBe(0);
-//     });
-//   });
-
-//   describe('getProductById', () => {
-//     // 【注意】mock 版直接使用假資料裡已知的 id，不需要先呼叫 getProducts()
-//     test('找到的產品應有 id 屬性且 id 正確', async () => {
-//       const result = await productService.getProductById('product-1');
-//       expect(result).toHaveProperty('id');
-//       expect(result.id).toBe('product-1');
+//     test('應去除重複（2 個分類）', () => {
+//       const result = utils.getAllCategories(mockProducts);
+//       expect(result.length).toBe(2);
 //     });
 
-//     test('找不到產品應回傳 null', async () => {
-//       expect(await productService.getProductById('不存在的ID')).toBeNull();
-//     });
-//   });
-
-//   describe('getCategories', () => {
-//     test('應回傳非空字串陣列', async () => {
-//       const result = await productService.getCategories();
-//       expect(Array.isArray(result)).toBe(true);
-//       expect(result.length).toBeGreaterThan(0);
-//       expect(result.every(cat => typeof cat === 'string')).toBe(true);
-//     });
-
-//     // 【Mock 版新增】假資料中「衣服」出現兩次，可明確驗證去重邏輯
-//     test('應去除重複分類（衣服出現兩次，結果應只有一次）', async () => {
-//       const result = await productService.getCategories();
+//     test('結果不應有重複的分類', () => {
+//       const result = utils.getAllCategories(mockProducts);
 //       const uniqueResult = [...new Set(result)];
 //       expect(result.length).toBe(uniqueResult.length);
 //     });
 //   });
+
+//   describe('formatDate', () => {
+//     const timestamp = 1704067200; // 2024/01/01 08:00
+
+//     test('應有實作（不為 undefined）', () => {
+//       const result = utils.formatDate(timestamp);
+//       expect(result).toBeDefined();
+//     });
+
+//     test('應回傳字串', () => {
+//       const result = utils.formatDate(timestamp);
+//       expect(typeof result).toBe('string');
+//     });
+
+//     test('格式應為 YYYY/MM/DD HH:mm', () => {
+//       const result = utils.formatDate(timestamp);
+//       expect(result).toMatch(/^\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}$/);
+//     });
+//   });
+
+//   describe('getDaysAgo', () => {
+//     test('應有實作（不為 undefined）', () => {
+//       const timestamp = Math.floor(Date.now() / 1000) - 86400 * 3;
+//       const result = utils.getDaysAgo(timestamp);
+//       expect(result).toBeDefined();
+//     });
+
+//     test('應回傳字串', () => {
+//       const timestamp = Math.floor(Date.now() / 1000) - 86400 * 3;
+//       const result = utils.getDaysAgo(timestamp);
+//       expect(typeof result).toBe('string');
+//     });
+
+//     test('今天的時間戳應回傳「今天」', () => {
+//       const timestamp = Math.floor(Date.now() / 1000);
+//       const result = utils.getDaysAgo(timestamp);
+//       expect(result).toBe('今天');
+//     });
+
+//     test('應包含中文時間關鍵字', () => {
+//       const timestamp = Math.floor(Date.now() / 1000) - 86400 * 3;
+//       const result = utils.getDaysAgo(timestamp);
+//       expect(result).toMatch(/天|今/);
+//     });
+//   });
+
+//   describe('validateOrderUser', () => {
+//     test('應有實作（不為 undefined）', () => {
+//       const result = utils.validateOrderUser(validUser);
+//       expect(result).toBeDefined();
+//     });
+
+//     test('有效資料應回傳物件', () => {
+//       const result = utils.validateOrderUser(validUser);
+//       expect(typeof result).toBe('object');
+//       expect(result).not.toBeNull();
+//     });
+
+//     test('有效資料 isValid 應為 true', () => {
+//       const result = utils.validateOrderUser(validUser);
+//       expect(result.isValid).toBe(true);
+//     });
+
+//     test('無效資料 isValid 應為 false', () => {
+//       const result = utils.validateOrderUser(invalidUser);
+//       expect(result.isValid).toBe(false);
+//     });
+
+//     test('無效資料應有 errors 陣列', () => {
+//       const result = utils.validateOrderUser(invalidUser);
+//       expect(Array.isArray(result.errors)).toBe(true);
+//       expect(result.errors.length).toBeGreaterThan(0);
+//     });
+
+//     test('姓名為空應驗證失敗', () => {
+//       const emptyName = { ...validUser, name: '' };
+//       const result = utils.validateOrderUser(emptyName);
+//       expect(result.isValid).toBe(false);
+//     });
+
+//     test('電話格式不正確應驗證失敗', () => {
+//       const wrongTel = { ...validUser, tel: '1234567890' };
+//       const result = utils.validateOrderUser(wrongTel);
+//       expect(result.isValid).toBe(false);
+//     });
+
+//     test('Email 格式不正確應驗證失敗', () => {
+//       const wrongEmail = { ...validUser, email: 'notanemail' };
+//       const result = utils.validateOrderUser(wrongEmail);
+//       expect(result.isValid).toBe(false);
+//     });
+
+//     test('地址為空應驗證失敗', () => {
+//       const emptyAddress = { ...validUser, address: '' };
+//       const result = utils.validateOrderUser(emptyAddress);
+//       expect(result.isValid).toBe(false);
+//     });
+
+//     test('付款方式不在允許清單應驗證失敗', () => {
+//       const wrongPayment = { ...validUser, payment: 'Bitcoin' };
+//       const result = utils.validateOrderUser(wrongPayment);
+//       expect(result.isValid).toBe(false);
+//     });
+//   });
+
+//   describe('validateCartQuantity', () => {
+//     test('應有實作（不為 undefined）', () => {
+//       const result = utils.validateCartQuantity(5);
+//       expect(result).toBeDefined();
+//     });
+
+//     test('應回傳物件', () => {
+//       const result = utils.validateCartQuantity(5);
+//       expect(typeof result).toBe('object');
+//       expect(result).not.toBeNull();
+//     });
+
+//     test('有效數量應驗證成功', () => {
+//       const result = utils.validateCartQuantity(5);
+//       expect(result.isValid).toBe(true);
+//     });
+
+//     test('數量 0 應驗證失敗', () => {
+//       const result = utils.validateCartQuantity(0);
+//       expect(result.isValid).toBe(false);
+//     });
+
+//     test('數量 100 應驗證失敗', () => {
+//       const result = utils.validateCartQuantity(100);
+//       expect(result.isValid).toBe(false);
+//     });
+
+//     test('小數應驗證失敗', () => {
+//       const result = utils.validateCartQuantity(5.5);
+//       expect(result.isValid).toBe(false);
+//     });
+//   });
+
+//   describe('formatCurrency', () => {
+//     test('應有實作（不為 undefined）', () => {
+//       const result = utils.formatCurrency(1000);
+//       expect(result).toBeDefined();
+//     });
+
+//     test('應包含 NT$ 前缀', () => {
+//       const result = utils.formatCurrency(1000);
+//       expect(result).toContain('NT$');
+//     });
+
+//     test('1000 應格式化為千位分隔符 1,000', () => {
+//       const result = utils.formatCurrency(1000);
+//       expect(result).toContain('1,000');
+//     });
+
+//     test('1000000 應正確格式化為 1,000,000', () => {
+//       const result = utils.formatCurrency(1000000);
+//       expect(result).toContain('1,000,000');
+//     });
+//   });
 // });
+
+// ========================================
+// 測試三：產品服務
+// ========================================
+describe('測試三：產品服務', () => {
+
+  // 從測試三開始，用 mockResolvedValue 覆蓋測試一設定的真實實作
+  // 每個 describe 的 beforeEach 會在「檔案層級 beforeEach（clearAllMocks）」之後執行
+  beforeEach(() => {
+    api.fetchProducts.mockResolvedValue(mockApiProducts);
+  });
+
+  describe('getProducts', () => {
+    test('應回傳物件', async () => {
+      const result = await productService.getProducts();
+      expect(typeof result).toBe('object');
+      expect(result).not.toBeNull();
+    });
+
+    test('count 應為數字且等於 products 長度', async () => {
+      const result = await productService.getProducts();
+      expect(typeof result.count).toBe('number');
+      expect(result.count).toBe(result.products.length);
+    });
+
+    test('應只呼叫一次 fetchProducts', async () => {
+      await productService.getProducts();
+      expect(api.fetchProducts).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('getProductsByCategory', () => {
+    // 【注意】mock 版直接使用假資料裡的分類名稱，不需要先呼叫 getCategories() 取得真實分類
+    test('應回傳符合分類的陣列', async () => {
+      const result = await productService.getProductsByCategory('衣服');
+      expect(Array.isArray(result)).toBe(true);
+      expect(result.every(p => p.category === '衣服')).toBe(true);
+    });
+
+    test('不存在的分類應回傳空陣列', async () => {
+      const result = await productService.getProductsByCategory('不存在的分類');
+      expect(Array.isArray(result)).toBe(true);
+      expect(result.length).toBe(0);
+    });
+  });
+
+  describe('getProductById', () => {
+    // 【注意】mock 版直接使用假資料裡已知的 id，不需要先呼叫 getProducts()
+    test('找到的產品應有 id 屬性且 id 正確', async () => {
+      const result = await productService.getProductById('product-1');
+      expect(result).toHaveProperty('id');
+      expect(result.id).toBe('product-1');
+    });
+
+    test('找不到產品應回傳 null', async () => {
+      expect(await productService.getProductById('不存在的ID')).toBeNull();
+    });
+  });
+
+  describe('getCategories', () => {
+    test('應回傳非空字串陣列', async () => {
+      const result = await productService.getCategories();
+      expect(Array.isArray(result)).toBe(true);
+      expect(result.length).toBeGreaterThan(0);
+      expect(result.every(cat => typeof cat === 'string')).toBe(true);
+    });
+
+    // 【Mock 版新增】假資料中「衣服」出現兩次，可明確驗證去重邏輯
+    test('應去除重複分類（衣服出現兩次，結果應只有一次）', async () => {
+      const result = await productService.getCategories();
+      const uniqueResult = [...new Set(result)];
+      expect(result.length).toBe(uniqueResult.length);
+    });
+  });
+});
 
 // ========================================
 // 測試四：購物車服務
