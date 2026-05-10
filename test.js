@@ -105,370 +105,370 @@ const mockOrdersData = [
 // ========================================
 // 測試一：API 模組
 // ========================================
-describe('測試一：API 模組', () => {
+// describe('測試一：API 模組', () => {
 
-  // 在測試一開始前，讓所有 mock 函式借用真實實作
-  // jest.requireActual('./api') 繞過 jest.mock，取得原始的 api.js
-  beforeAll(() => {
-    const actualApi = jest.requireActual('./api');
-    Object.keys(actualApi).forEach(key => {
-      if (typeof api[key] === 'function') {
-        api[key].mockImplementation((...args) => actualApi[key](...args));
-      }
-    });
-  });
+//   // 在測試一開始前，讓所有 mock 函式借用真實實作
+//   // jest.requireActual('./api') 繞過 jest.mock，取得原始的 api.js
+//   beforeAll(() => {
+//     const actualApi = jest.requireActual('./api');
+//     Object.keys(actualApi).forEach(key => {
+//       if (typeof api[key] === 'function') {
+//         api[key].mockImplementation((...args) => actualApi[key](...args));
+//       }
+//     });
+//   });
 
-  describe('fetchProducts', () => {
-    test('應回傳非空陣列', async () => {
-      const result = await api.fetchProducts();
-      expect(Array.isArray(result)).toBe(true);
-      expect(result.length).toBeGreaterThan(0);
-    });
-  });
+//   describe('fetchProducts', () => {
+//     test('應回傳非空陣列', async () => {
+//       const result = await api.fetchProducts();
+//       expect(Array.isArray(result)).toBe(true);
+//       expect(result.length).toBeGreaterThan(0);
+//     });
+//   });
 
-  describe('fetchCart', () => {
-    test('應回傳含 carts、total、finalTotal 的物件', async () => {
-      const result = await api.fetchCart();
-      expect(typeof result).toBe('object');
-      expect(result).not.toBeNull();
-      expect(Array.isArray(result.carts)).toBe(true);
-      expect(typeof result.total).toBe('number');
-      expect(typeof result.finalTotal).toBe('number');
-    });
-  });
+//   describe('fetchCart', () => {
+//     test('應回傳含 carts、total、finalTotal 的物件', async () => {
+//       const result = await api.fetchCart();
+//       expect(typeof result).toBe('object');
+//       expect(result).not.toBeNull();
+//       expect(Array.isArray(result.carts)).toBe(true);
+//       expect(typeof result.total).toBe('number');
+//       expect(typeof result.finalTotal).toBe('number');
+//     });
+//   });
 
-  describe('addToCart', () => {
-    test('應回傳含 carts 陣列的物件', async () => {
-      const products = await api.fetchProducts();
-      const result = await api.addToCart(products[0].id, 1);
-      expect(typeof result).toBe('object');
-      expect(result).not.toBeNull();
-      expect(result).toHaveProperty('carts');
-      expect(Array.isArray(result.carts)).toBe(true);
-    });
-  });
+//   describe('addToCart', () => {
+//     test('應回傳含 carts 陣列的物件', async () => {
+//       const products = await api.fetchProducts();
+//       const result = await api.addToCart(products[0].id, 1);
+//       expect(typeof result).toBe('object');
+//       expect(result).not.toBeNull();
+//       expect(result).toHaveProperty('carts');
+//       expect(Array.isArray(result.carts)).toBe(true);
+//     });
+//   });
 
-  describe('updateCartItem', () => {
-    test('應回傳物件', async () => {
-      const products = await api.fetchProducts();
-      await api.addToCart(products[0].id, 1);
-      const cart = await api.fetchCart();
-      if (cart.carts.length > 0) {
-        const result = await api.updateCartItem(cart.carts[0].id, 2);
-        expect(typeof result).toBe('object');
-        expect(result).not.toBeNull();
-      }
-    });
-  });
+//   describe('updateCartItem', () => {
+//     test('應回傳物件', async () => {
+//       const products = await api.fetchProducts();
+//       await api.addToCart(products[0].id, 1);
+//       const cart = await api.fetchCart();
+//       if (cart.carts.length > 0) {
+//         const result = await api.updateCartItem(cart.carts[0].id, 2);
+//         expect(typeof result).toBe('object');
+//         expect(result).not.toBeNull();
+//       }
+//     });
+//   });
 
-  describe('deleteCartItem', () => {
-    test('應回傳物件', async () => {
-      const products = await api.fetchProducts();
-      await api.addToCart(products[0].id, 1);
-      const cart = await api.fetchCart();
-      if (cart.carts.length > 0) {
-        const result = await api.deleteCartItem(cart.carts[0].id);
-        expect(typeof result).toBe('object');
-        expect(result).not.toBeNull();
-      }
-    });
-  });
+//   describe('deleteCartItem', () => {
+//     test('應回傳物件', async () => {
+//       const products = await api.fetchProducts();
+//       await api.addToCart(products[0].id, 1);
+//       const cart = await api.fetchCart();
+//       if (cart.carts.length > 0) {
+//         const result = await api.deleteCartItem(cart.carts[0].id);
+//         expect(typeof result).toBe('object');
+//         expect(result).not.toBeNull();
+//       }
+//     });
+//   });
 
-  describe('clearCart', () => {
-    test('應回傳物件，且清空後 carts 為空陣列、total 為 0', async () => {
-      const products = await api.fetchProducts();
-      await api.addToCart(products[0].id, 1);
-      const result = await api.clearCart();
-      expect(typeof result).toBe('object');
-      expect(result).not.toBeNull();
-      expect(result.carts.length).toBe(0);
-      expect(result.total).toBe(0);
-    });
-  });
+//   describe('clearCart', () => {
+//     test('應回傳物件，且清空後 carts 為空陣列、total 為 0', async () => {
+//       const products = await api.fetchProducts();
+//       await api.addToCart(products[0].id, 1);
+//       const result = await api.clearCart();
+//       expect(typeof result).toBe('object');
+//       expect(result).not.toBeNull();
+//       expect(result.carts.length).toBe(0);
+//       expect(result.total).toBe(0);
+//     });
+//   });
 
-  describe('createOrder', () => {
-    test('當 status 為 true 時，應有 id 且為 string', async () => {
-      const products = await api.fetchProducts();
-      await api.addToCart(products[0].id, 1);
-      const result = await api.createOrder(validUser);
-      if (result.status === true) {
-        expect(result).toHaveProperty('id');
-        expect(typeof result.id).toBe('string');
-      }
-    });
-  });
+//   describe('createOrder', () => {
+//     test('當 status 為 true 時，應有 id 且為 string', async () => {
+//       const products = await api.fetchProducts();
+//       await api.addToCart(products[0].id, 1);
+//       const result = await api.createOrder(validUser);
+//       if (result.status === true) {
+//         expect(result).toHaveProperty('id');
+//         expect(typeof result.id).toBe('string');
+//       }
+//     });
+//   });
 
-  describe('fetchOrders', () => {
-    test('應回傳陣列', async () => {
-      const result = await api.fetchOrders();
-      expect(Array.isArray(result)).toBe(true);
-    });
-  });
+//   describe('fetchOrders', () => {
+//     test('應回傳陣列', async () => {
+//       const result = await api.fetchOrders();
+//       expect(Array.isArray(result)).toBe(true);
+//     });
+//   });
 
-  describe('updateOrderStatus', () => {
-    test('應回傳物件', async () => {
-      const orders = await api.fetchOrders();
-      if (orders.length > 0) {
-        const result = await api.updateOrderStatus(orders[0].id, true);
-        expect(typeof result).toBe('object');
-        expect(result).not.toBeNull();
-      }
-    });
+//   describe('updateOrderStatus', () => {
+//     test('應回傳物件', async () => {
+//       const orders = await api.fetchOrders();
+//       if (orders.length > 0) {
+//         const result = await api.updateOrderStatus(orders[0].id, true);
+//         expect(typeof result).toBe('object');
+//         expect(result).not.toBeNull();
+//       }
+//     });
 
-    test('當 status 為 true 時，應有 orders 屬性', async () => {
-      const orders = await api.fetchOrders();
-      if (orders.length > 0) {
-        const result = await api.updateOrderStatus(orders[0].id, true);
-        if (result.status === true) {
-          expect(result).toHaveProperty('orders');
-          expect(Array.isArray(result.orders)).toBe(true);
-        }
-      }
-    });
+//     test('當 status 為 true 時，應有 orders 屬性', async () => {
+//       const orders = await api.fetchOrders();
+//       if (orders.length > 0) {
+//         const result = await api.updateOrderStatus(orders[0].id, true);
+//         if (result.status === true) {
+//           expect(result).toHaveProperty('orders');
+//           expect(Array.isArray(result.orders)).toBe(true);
+//         }
+//       }
+//     });
 
-    test('當 status 為 false 時，應有 message 屬性', async () => {
-      try {
-        const result = await api.updateOrderStatus('不存在的訂單ID', true);
-        if (result.status === false) {
-          expect(result).toHaveProperty('message');
-          expect(typeof result.message).toBe('string');
-        }
-      } catch (e) {
-        if (e.response?.data?.status === false) {
-          expect(e.response.data).toHaveProperty('message');
-          expect(typeof e.response.data.message).toBe('string');
-        }
-      }
-    });
-  });
+//     test('當 status 為 false 時，應有 message 屬性', async () => {
+//       try {
+//         const result = await api.updateOrderStatus('不存在的訂單ID', true);
+//         if (result.status === false) {
+//           expect(result).toHaveProperty('message');
+//           expect(typeof result.message).toBe('string');
+//         }
+//       } catch (e) {
+//         if (e.response?.data?.status === false) {
+//           expect(e.response.data).toHaveProperty('message');
+//           expect(typeof e.response.data.message).toBe('string');
+//         }
+//       }
+//     });
+//   });
 
-  describe('deleteOrder', () => {
-    test('應回傳物件', async () => {
-      const orders = await api.fetchOrders();
-      if (orders.length > 0) {
-        const result = await api.deleteOrder(orders[0].id);
-        expect(typeof result).toBe('object');
-        expect(result).not.toBeNull();
-      }
-    });
+//   describe('deleteOrder', () => {
+//     test('應回傳物件', async () => {
+//       const orders = await api.fetchOrders();
+//       if (orders.length > 0) {
+//         const result = await api.deleteOrder(orders[0].id);
+//         expect(typeof result).toBe('object');
+//         expect(result).not.toBeNull();
+//       }
+//     });
 
-    test('當 status 為 false 時，應有 message 屬性', async () => {
-      try {
-        const result = await api.deleteOrder('不存在的訂單ID');
-        if (result.status === false) {
-          expect(result).toHaveProperty('message');
-          expect(typeof result.message).toBe('string');
-        }
-      } catch (e) {
-        if (e.response?.data?.status === false) {
-          expect(e.response.data).toHaveProperty('message');
-          expect(typeof e.response.data.message).toBe('string');
-        }
-      }
-    });
-  });
-});
+//     test('當 status 為 false 時，應有 message 屬性', async () => {
+//       try {
+//         const result = await api.deleteOrder('不存在的訂單ID');
+//         if (result.status === false) {
+//           expect(result).toHaveProperty('message');
+//           expect(typeof result.message).toBe('string');
+//         }
+//       } catch (e) {
+//         if (e.response?.data?.status === false) {
+//           expect(e.response.data).toHaveProperty('message');
+//           expect(typeof e.response.data.message).toBe('string');
+//         }
+//       }
+//     });
+//   });
+// });
 
 // ========================================
 // 測試二：工具函式
 // ========================================
-// describe('測試二：工具函式', () => {
+describe('測試二：工具函式', () => {
 
-//   describe('getDiscountRate', () => {
-//     test('應回傳字串', () => {
-//       const result = utils.getDiscountRate(mockProduct);
-//       expect(typeof result).toBe('string');
-//     });
+  describe('getDiscountRate', () => {
+    test('應回傳字串', () => {
+      const result = utils.getDiscountRate(mockProduct);
+      expect(typeof result).toBe('string');
+    });
 
-//     test('應包含 "折"', () => {
-//       const result = utils.getDiscountRate(mockProduct);
-//       expect(result).toContain('折');
-//     });
+    test('應包含 "折"', () => {
+      const result = utils.getDiscountRate(mockProduct);
+      expect(result).toContain('折');
+    });
 
-//     test('應正確四捨五入：7.4折應為7折', () => {
-//       const product = { price: 740, origin_price: 1000 };
-//       const result = utils.getDiscountRate(product);
-//       expect(result).toMatch(/^7\s*折$/);
-//     });
-//   });
+    test('應正確四捨五入：7.4折應為7折', () => {
+      const product = { price: 740, origin_price: 1000 };
+      const result = utils.getDiscountRate(product);
+      expect(result).toMatch(/^7\s*折$/);
+    });
+  });
 
-//   describe('getAllCategories', () => {
-//     test('應回傳陣列', () => {
-//       const result = utils.getAllCategories(mockProducts);
-//       expect(Array.isArray(result)).toBe(true);
-//     });
+  describe('getAllCategories', () => {
+    test('應回傳陣列', () => {
+      const result = utils.getAllCategories(mockProducts);
+      expect(Array.isArray(result)).toBe(true);
+    });
 
-//     test('應去除重複（2 個分類）', () => {
-//       const result = utils.getAllCategories(mockProducts);
-//       expect(result.length).toBe(2);
-//     });
+    test('應去除重複（2 個分類）', () => {
+      const result = utils.getAllCategories(mockProducts);
+      expect(result.length).toBe(2);
+    });
 
-//     test('結果不應有重複的分類', () => {
-//       const result = utils.getAllCategories(mockProducts);
-//       const uniqueResult = [...new Set(result)];
-//       expect(result.length).toBe(uniqueResult.length);
-//     });
-//   });
+    test('結果不應有重複的分類', () => {
+      const result = utils.getAllCategories(mockProducts);
+      const uniqueResult = [...new Set(result)];
+      expect(result.length).toBe(uniqueResult.length);
+    });
+  });
 
-//   describe('formatDate', () => {
-//     const timestamp = 1704067200; // 2024/01/01 08:00
+  describe('formatDate', () => {
+    const timestamp = 1704067200; // 2024/01/01 08:00
 
-//     test('應有實作（不為 undefined）', () => {
-//       const result = utils.formatDate(timestamp);
-//       expect(result).toBeDefined();
-//     });
+    test('應有實作（不為 undefined）', () => {
+      const result = utils.formatDate(timestamp);
+      expect(result).toBeDefined();
+    });
 
-//     test('應回傳字串', () => {
-//       const result = utils.formatDate(timestamp);
-//       expect(typeof result).toBe('string');
-//     });
+    test('應回傳字串', () => {
+      const result = utils.formatDate(timestamp);
+      expect(typeof result).toBe('string');
+    });
 
-//     test('格式應為 YYYY/MM/DD HH:mm', () => {
-//       const result = utils.formatDate(timestamp);
-//       expect(result).toMatch(/^\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}$/);
-//     });
-//   });
+    test('格式應為 YYYY/MM/DD HH:mm', () => {
+      const result = utils.formatDate(timestamp);
+      expect(result).toMatch(/^\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}$/);
+    });
+  });
 
-//   describe('getDaysAgo', () => {
-//     test('應有實作（不為 undefined）', () => {
-//       const timestamp = Math.floor(Date.now() / 1000) - 86400 * 3;
-//       const result = utils.getDaysAgo(timestamp);
-//       expect(result).toBeDefined();
-//     });
+  describe('getDaysAgo', () => {
+    test('應有實作（不為 undefined）', () => {
+      const timestamp = Math.floor(Date.now() / 1000) - 86400 * 3;
+      const result = utils.getDaysAgo(timestamp);
+      expect(result).toBeDefined();
+    });
 
-//     test('應回傳字串', () => {
-//       const timestamp = Math.floor(Date.now() / 1000) - 86400 * 3;
-//       const result = utils.getDaysAgo(timestamp);
-//       expect(typeof result).toBe('string');
-//     });
+    test('應回傳字串', () => {
+      const timestamp = Math.floor(Date.now() / 1000) - 86400 * 3;
+      const result = utils.getDaysAgo(timestamp);
+      expect(typeof result).toBe('string');
+    });
 
-//     test('今天的時間戳應回傳「今天」', () => {
-//       const timestamp = Math.floor(Date.now() / 1000);
-//       const result = utils.getDaysAgo(timestamp);
-//       expect(result).toBe('今天');
-//     });
+    test('今天的時間戳應回傳「今天」', () => {
+      const timestamp = Math.floor(Date.now() / 1000);
+      const result = utils.getDaysAgo(timestamp);
+      expect(result).toBe('今天');
+    });
 
-//     test('應包含中文時間關鍵字', () => {
-//       const timestamp = Math.floor(Date.now() / 1000) - 86400 * 3;
-//       const result = utils.getDaysAgo(timestamp);
-//       expect(result).toMatch(/天|今/);
-//     });
-//   });
+    test('應包含中文時間關鍵字', () => {
+      const timestamp = Math.floor(Date.now() / 1000) - 86400 * 3;
+      const result = utils.getDaysAgo(timestamp);
+      expect(result).toMatch(/天|今/);
+    });
+  });
 
-//   describe('validateOrderUser', () => {
-//     test('應有實作（不為 undefined）', () => {
-//       const result = utils.validateOrderUser(validUser);
-//       expect(result).toBeDefined();
-//     });
+  describe('validateOrderUser', () => {
+    test('應有實作（不為 undefined）', () => {
+      const result = utils.validateOrderUser(validUser);
+      expect(result).toBeDefined();
+    });
 
-//     test('有效資料應回傳物件', () => {
-//       const result = utils.validateOrderUser(validUser);
-//       expect(typeof result).toBe('object');
-//       expect(result).not.toBeNull();
-//     });
+    test('有效資料應回傳物件', () => {
+      const result = utils.validateOrderUser(validUser);
+      expect(typeof result).toBe('object');
+      expect(result).not.toBeNull();
+    });
 
-//     test('有效資料 isValid 應為 true', () => {
-//       const result = utils.validateOrderUser(validUser);
-//       expect(result.isValid).toBe(true);
-//     });
+    test('有效資料 isValid 應為 true', () => {
+      const result = utils.validateOrderUser(validUser);
+      expect(result.isValid).toBe(true);
+    });
 
-//     test('無效資料 isValid 應為 false', () => {
-//       const result = utils.validateOrderUser(invalidUser);
-//       expect(result.isValid).toBe(false);
-//     });
+    test('無效資料 isValid 應為 false', () => {
+      const result = utils.validateOrderUser(invalidUser);
+      expect(result.isValid).toBe(false);
+    });
 
-//     test('無效資料應有 errors 陣列', () => {
-//       const result = utils.validateOrderUser(invalidUser);
-//       expect(Array.isArray(result.errors)).toBe(true);
-//       expect(result.errors.length).toBeGreaterThan(0);
-//     });
+    test('無效資料應有 errors 陣列', () => {
+      const result = utils.validateOrderUser(invalidUser);
+      expect(Array.isArray(result.errors)).toBe(true);
+      expect(result.errors.length).toBeGreaterThan(0);
+    });
 
-//     test('姓名為空應驗證失敗', () => {
-//       const emptyName = { ...validUser, name: '' };
-//       const result = utils.validateOrderUser(emptyName);
-//       expect(result.isValid).toBe(false);
-//     });
+    test('姓名為空應驗證失敗', () => {
+      const emptyName = { ...validUser, name: '' };
+      const result = utils.validateOrderUser(emptyName);
+      expect(result.isValid).toBe(false);
+    });
 
-//     test('電話格式不正確應驗證失敗', () => {
-//       const wrongTel = { ...validUser, tel: '1234567890' };
-//       const result = utils.validateOrderUser(wrongTel);
-//       expect(result.isValid).toBe(false);
-//     });
+    test('電話格式不正確應驗證失敗', () => {
+      const wrongTel = { ...validUser, tel: '1234567890' };
+      const result = utils.validateOrderUser(wrongTel);
+      expect(result.isValid).toBe(false);
+    });
 
-//     test('Email 格式不正確應驗證失敗', () => {
-//       const wrongEmail = { ...validUser, email: 'notanemail' };
-//       const result = utils.validateOrderUser(wrongEmail);
-//       expect(result.isValid).toBe(false);
-//     });
+    test('Email 格式不正確應驗證失敗', () => {
+      const wrongEmail = { ...validUser, email: 'notanemail' };
+      const result = utils.validateOrderUser(wrongEmail);
+      expect(result.isValid).toBe(false);
+    });
 
-//     test('地址為空應驗證失敗', () => {
-//       const emptyAddress = { ...validUser, address: '' };
-//       const result = utils.validateOrderUser(emptyAddress);
-//       expect(result.isValid).toBe(false);
-//     });
+    test('地址為空應驗證失敗', () => {
+      const emptyAddress = { ...validUser, address: '' };
+      const result = utils.validateOrderUser(emptyAddress);
+      expect(result.isValid).toBe(false);
+    });
 
-//     test('付款方式不在允許清單應驗證失敗', () => {
-//       const wrongPayment = { ...validUser, payment: 'Bitcoin' };
-//       const result = utils.validateOrderUser(wrongPayment);
-//       expect(result.isValid).toBe(false);
-//     });
-//   });
+    test('付款方式不在允許清單應驗證失敗', () => {
+      const wrongPayment = { ...validUser, payment: 'Bitcoin' };
+      const result = utils.validateOrderUser(wrongPayment);
+      expect(result.isValid).toBe(false);
+    });
+  });
 
-//   describe('validateCartQuantity', () => {
-//     test('應有實作（不為 undefined）', () => {
-//       const result = utils.validateCartQuantity(5);
-//       expect(result).toBeDefined();
-//     });
+  describe('validateCartQuantity', () => {
+    test('應有實作（不為 undefined）', () => {
+      const result = utils.validateCartQuantity(5);
+      expect(result).toBeDefined();
+    });
 
-//     test('應回傳物件', () => {
-//       const result = utils.validateCartQuantity(5);
-//       expect(typeof result).toBe('object');
-//       expect(result).not.toBeNull();
-//     });
+    test('應回傳物件', () => {
+      const result = utils.validateCartQuantity(5);
+      expect(typeof result).toBe('object');
+      expect(result).not.toBeNull();
+    });
 
-//     test('有效數量應驗證成功', () => {
-//       const result = utils.validateCartQuantity(5);
-//       expect(result.isValid).toBe(true);
-//     });
+    test('有效數量應驗證成功', () => {
+      const result = utils.validateCartQuantity(5);
+      expect(result.isValid).toBe(true);
+    });
 
-//     test('數量 0 應驗證失敗', () => {
-//       const result = utils.validateCartQuantity(0);
-//       expect(result.isValid).toBe(false);
-//     });
+    test('數量 0 應驗證失敗', () => {
+      const result = utils.validateCartQuantity(0);
+      expect(result.isValid).toBe(false);
+    });
 
-//     test('數量 100 應驗證失敗', () => {
-//       const result = utils.validateCartQuantity(100);
-//       expect(result.isValid).toBe(false);
-//     });
+    test('數量 100 應驗證失敗', () => {
+      const result = utils.validateCartQuantity(100);
+      expect(result.isValid).toBe(false);
+    });
 
-//     test('小數應驗證失敗', () => {
-//       const result = utils.validateCartQuantity(5.5);
-//       expect(result.isValid).toBe(false);
-//     });
-//   });
+    test('小數應驗證失敗', () => {
+      const result = utils.validateCartQuantity(5.5);
+      expect(result.isValid).toBe(false);
+    });
+  });
 
-//   describe('formatCurrency', () => {
-//     test('應有實作（不為 undefined）', () => {
-//       const result = utils.formatCurrency(1000);
-//       expect(result).toBeDefined();
-//     });
+  describe('formatCurrency', () => {
+    test('應有實作（不為 undefined）', () => {
+      const result = utils.formatCurrency(1000);
+      expect(result).toBeDefined();
+    });
 
-//     test('應包含 NT$ 前缀', () => {
-//       const result = utils.formatCurrency(1000);
-//       expect(result).toContain('NT$');
-//     });
+    test('應包含 NT$ 前缀', () => {
+      const result = utils.formatCurrency(1000);
+      expect(result).toContain('NT$');
+    });
 
-//     test('1000 應格式化為千位分隔符 1,000', () => {
-//       const result = utils.formatCurrency(1000);
-//       expect(result).toContain('1,000');
-//     });
+    test('1000 應格式化為千位分隔符 1,000', () => {
+      const result = utils.formatCurrency(1000);
+      expect(result).toContain('1,000');
+    });
 
-//     test('1000000 應正確格式化為 1,000,000', () => {
-//       const result = utils.formatCurrency(1000000);
-//       expect(result).toContain('1,000,000');
-//     });
-//   });
-// });
+    test('1000000 應正確格式化為 1,000,000', () => {
+      const result = utils.formatCurrency(1000000);
+      expect(result).toContain('1,000,000');
+    });
+  });
+});
 
 // ========================================
 // 測試三：產品服務

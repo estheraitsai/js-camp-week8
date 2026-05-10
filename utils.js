@@ -11,6 +11,12 @@ const dayjs = require('dayjs');
  */
 function getDiscountRate(product) {
   // 請實作此函式
+  const { origin_price, price } = product;
+  if (!origin_price || !price || origin_price <= 0) {
+    return '無折扣';
+  }
+  const discountRate = Math.round((price / origin_price) * 10);
+  return `${discountRate}折`;
 }
 
 /**
@@ -20,6 +26,7 @@ function getDiscountRate(product) {
  */
 function getAllCategories(products) {
   // 請實作此函式
+  return [...new Set(products.map((product) => product.category))];
 }
 
 /**
@@ -30,6 +37,7 @@ function getAllCategories(products) {
 function formatDate(timestamp) {
   // 請實作此函式
   // 提示：dayjs.unix...
+  return dayjs.unix(timestamp).format('YYYY/MM/DD HH:mm');
 }
 
 /**
@@ -43,6 +51,15 @@ function getDaysAgo(timestamp) {
   // 1. 用 dayjs() 取得今天
   // 2. 用 dayjs.unix(timestamp) 取得日期
   // 3. 用 .diff() 計算天數差異
+  const today = dayjs();
+  const targetDate = dayjs.unix(timestamp);
+  const daysAgo = today.diff(targetDate, 'day');
+
+  if (daysAgo === 0) {
+    return '今天';
+  }
+
+  return `${daysAgo} 天前`;
 }
 
 /**
@@ -59,6 +76,33 @@ function getDaysAgo(timestamp) {
  */
 function validateOrderUser(data) {
   // 請實作此函式
+  const errors = [];
+  const paymentOptions = ['ATM', 'Credit Card', 'Apple Pay'];
+
+  if (!data.name || data.name.trim() === '') {
+    errors.push('姓名不可為空');
+  }
+
+  if (!/^09\d{8}$/.test(data.tel)) {
+    errors.push('電話必須是 09 開頭的 10 位數字');
+  }
+
+  if (!data.email || !data.email.includes('@')) {
+    errors.push('Email 必須包含 @ 符號');
+  }
+
+  if (!data.address || data.address.trim() === '') {
+    errors.push('地址不可為空');
+  }
+
+  if (!paymentOptions.includes(data.payment)) {
+    errors.push('付款方式不正確');
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors,
+  };
 }
 
 /**
@@ -73,6 +117,30 @@ function validateOrderUser(data) {
  */
 function validateCartQuantity(quantity) {
   // 請實作此函式
+  if (!Number.isInteger(quantity)) {
+    return {
+      isValid: false,
+      error: '數量必須是整數',
+    };
+  }
+
+  if (quantity < 1) {
+    return {
+      isValid: false,
+      error: '數量不可小於 1',
+    };
+  }
+
+  if (quantity > 99) {
+    return {
+      isValid: false,
+      error: '數量不可大於 99',
+    };
+  }
+
+  return {
+    isValid: true,
+  };
 }
 
 /**
@@ -92,6 +160,7 @@ function validateCartQuantity(quantity) {
  */
 function formatCurrency(amount) {
   // 請實作此函式
+  return `NT$ ${amount.toLocaleString('zh-TW')}`;
 }
 
 module.exports = {
